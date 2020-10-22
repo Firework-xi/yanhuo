@@ -1,0 +1,176 @@
+<template>
+  <div>
+    <input type="none" readonly="“readonly”" class="ddd" v-model="zong" />
+    <div class="box">
+      <div class="top">
+        <div class="left" @click="add(1)">1</div>
+        <div class="middle" @click="add(2)">2</div>
+        <div class="right" @click="add(3)">3</div>
+      </div>
+      <div class="center">
+        <div class="left" @click="add(4)">4</div>
+        <div class="middle" @click="add(5)">5</div>
+        <div class="right" @click="add(6)">6</div>
+      </div>
+      <div class="bottom">
+        <div class="left" @click="add(7)">7</div>
+        <div class="middle" @click="add(8)">8</div>
+        <div class="right" @click="add(9)">9</div>
+      </div>
+      <div class="bottom">
+        <div class="left" @click="adden('+')">+</div>
+        <div class="middle" @click="adden('-')">-</div>
+        <div class="right" @click="adden('*')">*</div>
+        <div class="right" @click="adden('/')">/</div>
+      </div>
+    </div>
+    <button class="ddd" @click="inn">等于</button>
+    <button class="ddd" @click="deleties">重置</button>
+  </div>
+</template>
+
+<script>
+export default {
+  data () {
+    return {
+      zong: null,
+      arr: [],
+      zhi: null,
+      a: 1
+    }
+  },
+  methods: {
+    add (e) { // 点击1~9事件
+      this.zong = this.zong + e + ''
+      this.zhi = this.zhi + e + ''
+    },
+    deleties () {
+      this.zong = null
+      this.arr = []
+    },
+    adden (v) { // 加减乘除
+      this.zong = this.zong + v + ''
+      if (this.zhi - 0 !== 0) { this.arr.push(this.zhi - 0) }
+      this.arr.push(v)
+      console.log(this.arr)
+      this.zhi = null
+    },
+    digui (arr) { // 递归算结果
+      if (this.a === 1) {
+        var i = arr.findIndex(v => v === '*')
+        if (i === -1) {
+          this.a = 2
+          return this.digui(arr)
+        } else {
+          arr.splice((i - 1), 3, arr[(i - 1)] * arr[(i + 1)])
+          return this.digui(arr)
+        }
+      }
+      if (this.a === 2) {
+        var x = arr.findIndex(v => v === '/')
+        if (x === -1) {
+          this.a = 3
+          return this.digui(arr)
+        } else {
+          arr.splice((x - 1), 3, arr[(x - 1)] / arr[(x + 1)])
+          return this.digui(arr)
+        }
+      }
+      if (this.a === 3) {
+        var c = arr.findIndex(v => v === '+')
+        if (c === -1) {
+          this.a = 4
+          return this.digui(arr)
+        } else {
+          arr.splice((c - 1), 3, arr[(c - 1)] + arr[(c + 1)])
+          return this.digui(arr)
+        }
+      }
+      if (this.a === 4) {
+        var b = arr.findIndex(v => v === '-')
+        if (b === -1) {
+          return arr
+        } else {
+          arr.splice((b - 1), 3, arr[(b - 1)] - arr[(b + 1)])
+          return this.digui(arr)
+        }
+      }
+    },
+    inn () {
+      console.log(this.zhi)
+      var a = this.zhi - 0
+      this.arr.push(a)
+
+      this.arr = this.digui(this.arr)
+      // this.arr.forEach((v, i) => {
+      //   switch (v) {
+      //     case '*':
+      //       this.arr.splice((i - 1), 3, this.arr[(i - 1)] * this.arr[(i + 1)])
+      //       break
+      //     case '/':
+      //       this.arr.splice((i - 1), 3, this.butt += this.arr[i - 1] / this.arr[i + 1])
+      //       break
+      //     case '+':
+      //       this.arr.splice((i - 1), 3, this.butt += this.arr[i - 1] + this.arr[i + 1])
+      //       break
+      //     case '-':
+      //       this.arr.splice((i - 1), 3, this.butt += this.arr[i - 1] - this.arr[i + 1])
+      //       break
+      //   }
+      // })
+      this.zong = this.arr[0]
+      this.zhi = null
+      this.a = 1
+      console.log(this.arr)
+    }
+  }
+
+}
+</script>
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+}
+.ddd {
+  margin-left: 42%;
+  width: 260px;
+}
+
+body,
+html {
+  width: 100%;
+  height: 100%;
+}
+
+.box {
+  width: 100%;
+  height: 100%;
+  margin-left: 40%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.top,
+.center,
+.bottom {
+  text-align: center;
+  line-height: 100px;
+  height: 100px;
+  width: 300px;
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.left,
+.right,
+.middle {
+  margin-left: 15px;
+  width: 33%;
+  height: 100%;
+  background-color: darkcyan;
+}
+</style>
